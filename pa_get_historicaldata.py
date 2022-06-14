@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 This code gets hisotrical PurpleAir data of one site at a time and 
-for two days ONLY from new PurpleAir AQI.
+for two days ONLY from new PurpleAir API.
 
 Data from the site are in bytes and NOT in JSON format.
 
@@ -25,7 +25,7 @@ engine = create_engine('postgresql://postgres:password@location:port/database')
 key_read  = 'insert your key'
     
 def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
-    # PurpleAir AQI URL
+    # PurpleAir API URL
     root_url = 'https://api.purpleair.com/v1/sensors/'
 
     # Box domain: lat_lon = [nwlng,, nwlat, selng, selat]
