@@ -3,7 +3,7 @@
 This code gets hisotrical PurpleAir data of one site at a time and 
 for two days ONLY from new PurpleAir API.
 
-Data from the site are in bytes and NOT in JSON format.
+Data from the site are in bytes/text and NOT in JSON format.
 
 Created on Fri Jun 10 21:34:01 2022
 
@@ -83,7 +83,7 @@ def get_historicaldata(selsors_list,bdate,edate):
         else:
             fields_api_url += f'%2C{f}'
 
-    # Dates of Hsitorical Data
+    # Dates of Historical Data period
     bdate = bdate 
     edate = edate
     begindate = datetime.strptime(bdate, '%m-%d-%Y')
@@ -98,9 +98,9 @@ def get_historicaldata(selsors_list,bdate,edate):
     date_list_unix.reverse()
     len_datelist = len(date_list_unix) - 1
         
-    # Gettign weekly data for one sensor at a time
+    # Getting weekly data for one sensor at a time
     for s in sensors_list:
-        # Adding Sensor_index & API Key
+        # Adding sensor_index & API Key
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
 
         # Creating start and end date api url
@@ -110,7 +110,7 @@ def get_historicaldata(selsors_list,bdate,edate):
                       %(s,datetime.fromtimestamp(date_list_unix[i+1]),datetime.fromtimestamp(d)))
                 dates_api_url = f'&start_timestamp={date_list_unix[i+1]}&end_timestamp={d}'
             
-                # Working URL
+                # Final API URL
                 api_url = hist_api_url + dates_api_url + fields_api_url
                             
                 #
@@ -148,12 +148,12 @@ def get_historicaldata(selsors_list,bdate,edate):
                     # Writing to Postgres Table
                     df.to_sql('tablename', con=engine, if_exists='append', index=False)
 
-# Data downloading period
+# Data download period
 bdate = '6-1-2022' 
 edate = '6-6-2022'
 
-# Gettign sensors list
+# Getting sensors list
 sensors_list = get_sensorslist(65.001, 37.001, 99.001, 5.001, key_read)
 
-# Gettign PA data
+# Getting PA data
 get_historicaldata(sensors_list,bdate,edate)
