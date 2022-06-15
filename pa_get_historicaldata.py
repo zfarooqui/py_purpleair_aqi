@@ -161,7 +161,7 @@ def get_historicaldata(selsors_list,bdate,edate,key_read):
 bdate = '6-1-2022' 
 edate = '6-6-2022'
 
-# Getting sensors list
+# Getting sensors list in Box domain [nwlng,, nwlat, selng, selat]
 sensors_list = get_sensorslist(65.001, 37.001, 99.001, 5.001, key_read)
 
 # Getting PA data
