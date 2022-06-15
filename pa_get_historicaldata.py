@@ -135,7 +135,6 @@ def get_historicaldata(selsors_list,bdate,edate,key_read):
             
                 if df.empty:
                     print('------------- No Data Available -------------')
-                    pass
                 else:
                     # Adding Sensor Index/ID
                     df['id'] = s
