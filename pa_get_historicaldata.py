@@ -62,9 +62,14 @@ def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
     else:
         raise requests.exceptions.RequestExceptio
 
-    # Creating a PurpleAir monitors table in PostgreSQL
+    # Creating a PurpleAir monitors table in PostgreSQL (Optional)
     df.to_sql('tablename', con=engine, if_exists='append', index=False)
     
+    # writing to csv file
+    folderpath = 'Folder path'
+    filename = folderpath + '\sensors_list.csv' % (tablename,y)
+    df.to_csv(filename, index=False, header=True)
+            
     # Creating a Sensors 
     selsorslist = list(df.sensor_index)
     
@@ -145,8 +150,13 @@ def get_historicaldata(selsors_list,bdate,edate):
                     # Dropping duplicate rows
                     df = df.drop_duplicates(subset=None, keep='first', inplace=False)
                     
-                    # Writing to Postgres Table
+                    # Writing to Postgres Table (Optional)
                     df.to_sql('tablename', con=engine, if_exists='append', index=False)
+                    
+                    # writing to csv file
+                    folderpath = 'Folder path'
+                    filename = folderpath + '\sensorsID_%s_%s_%s.csv' % (s,datetime.fromtimestamp(date_list_unix[i+1]).strftime('%m-%d-%Y'),datetime.fromtimestamp(d).strftime('%m-%d-%Y'))
+                    df.to_csv(filename, index=False, header=True)
 
 # Data download period
 bdate = '6-1-2022' 
