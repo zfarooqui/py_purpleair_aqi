@@ -67,7 +67,7 @@ def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
     
     # writing to csv file
     folderpath = 'Folder path'
-    filename = folderpath + '\sensors_list.csv' % (tablename,y)
+    filename = folderpath + '\sensors_list.csv'
     df.to_csv(filename, index=False, header=True)
             
     # Creating a Sensors 
