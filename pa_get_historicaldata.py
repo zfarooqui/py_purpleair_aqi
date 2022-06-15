@@ -89,8 +89,6 @@ def get_historicaldata(selsors_list,bdate,edate):
             fields_api_url += f'%2C{f}'
 
     # Dates of Historical Data period
-    bdate = bdate 
-    edate = edate
     begindate = datetime.strptime(bdate, '%m-%d-%Y')
     enddate   = datetime.strptime(edate, '%m-%d-%Y')
     date_list = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
@@ -100,10 +98,11 @@ def get_historicaldata(selsors_list,bdate,edate):
     for dt in date_list:
         date_list_unix.append(int(time.mktime(dt.timetuple())))
 
+    # Reversing to get data from end date to start date
     date_list_unix.reverse()
     len_datelist = len(date_list_unix) - 1
         
-    # Getting weekly data for one sensor at a time
+    # Getting 2-data for one sensor at a time
     for s in sensors_list:
         # Adding sensor_index & API Key
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
