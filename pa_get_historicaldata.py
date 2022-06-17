@@ -75,7 +75,7 @@ def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
     
     return sensorslist
 
-def get_historicaldata(selsors_list,bdate,edate,key_read):
+def get_historicaldata(sensors_list,bdate,edate,key_read):
     # Historical API URL
     root_api_url = 'https://june2022.api.purpleair.com/v1/sensors/'
 
