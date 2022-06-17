@@ -71,9 +71,9 @@ def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
     df.to_csv(filename, index=False, header=True)
             
     # Creating a Sensors 
-    selsorslist = list(df.sensor_index)
+    sensorslist = list(df.sensor_index)
     
-    return selsorslist
+    return sensorslist
 
 def get_historicaldata(selsors_list,bdate,edate,key_read):
     # Historical API URL
