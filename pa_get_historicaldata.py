@@ -24,7 +24,7 @@ engine = create_engine('postgresql://postgres:password@location:port/database')
 # API Keys provided by PurpleAir(c)
 key_read  = 'insert your key'
     
-def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
+def get_sensorslist(nwlng,nwlat,selng,selat,location,key_read):
     # PurpleAir API URL
     root_url = 'https://api.purpleair.com/v1/sensors/'
 
@@ -48,8 +48,16 @@ def get_sensorslist(nwlng,nwlat,selng,selat,key_read):
         else:
             fields_api_url += f'%2C{f}'
 
+    # Indoor, outdoor or all
+    if (location == 'indoor'):
+        loc_api = f'&location_type=1'
+    elif (location == 'outdoor'):
+        loc_api = f'&location_type=0'
+    else:
+        loc_api = ''
+            
     # Final API URL
-    api_url = root_url + f'?api_key={key_read}' + fields_api_url + ll_api_url
+    api_url = root_url + f'?api_key={key_read}' + fields_api_url + ll_api_url + loc_api
 
     # Getting data
     response = requests.get(api_url)
@@ -161,7 +169,8 @@ bdate = '6-1-2022'
 edate = '6-6-2022'
 
 # Getting sensors list in Box domain [nwlng,, nwlat, selng, selat]
-sensors_list = get_sensorslist(65.001, 37.001, 99.001, 5.001, key_read)
+location='outdoor' # or 'indoor' or 'both'
+sensors_list = get_sensorslist(65.001, 37.001, 99.001, 5.001, location, key_read)
 
 # Getting PA data
 get_historicaldata(sensors_list,bdate,edate,key_read)
