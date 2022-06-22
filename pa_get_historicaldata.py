@@ -68,7 +68,7 @@ def get_sensorslist(nwlng,nwlat,selng,selat,location,key_read):
         df = pd.DataFrame.from_records(json_data)
         df.columns = fields_list
     else:
-        raise requests.exceptions.RequestExceptio
+        raise requests.exceptions.RequestException
 
     # Creating a PurpleAir monitors table in PostgreSQL (Optional)
     df.to_sql('tablename', con=engine, if_exists='append', index=False)
