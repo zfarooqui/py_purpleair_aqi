@@ -131,7 +131,7 @@ def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
                 dates_api_url = f'&start_timestamp={date_list_unix[i+1]}&end_timestamp={d}'
             
                 # Final API URL
-                api_url = hist_api_url + dates_api_url + fields_api_url
+                api_url = hist_api_url + dates_api_url + average_api + fields_api_url
                             
                 #
                 try:
