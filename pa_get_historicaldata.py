@@ -83,9 +83,12 @@ def get_sensorslist(nwlng,nwlat,selng,selat,location,key_read):
     
     return sensorslist
 
-def get_historicaldata(sensors_list,bdate,edate,key_read):
+def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
     # Historical API URL
     root_api_url = 'https://june2022.api.purpleair.com/v1/sensors/'
+    
+    # Average time: The desired average in minutes, one of the following:0 (real-time),10 (default if not specified),30,60
+    average_api = f'&average={average_time}'
 
     # Creating fields api url from fields list to download the data: Note: Sensor ID/Index will not be downloaded as default
     fields_list = ['pm2.5_atm_a', 'pm2.5_atm_b', 'pm2.5_cf_1_a', 'pm2.5_cf_1_b', 'humidity_a', 'humidity_b', 
@@ -99,8 +102,13 @@ def get_historicaldata(sensors_list,bdate,edate,key_read):
     # Dates of Historical Data period
     begindate = datetime.strptime(bdate, '%m-%d-%Y')
     enddate   = datetime.strptime(edate, '%m-%d-%Y')
-    date_list = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
     
+    # Downlaod days based on average
+    if (average_time == 60):
+        date_list = pd.date_range(begindate,enddate,freq='14d') # for 14 days of data
+    else:
+        date_list = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
+        
     # Converting to UNIX timestamp
     date_list_unix=[]
     for dt in date_list:
@@ -173,4 +181,5 @@ location='outdoor' # or 'indoor' or 'both'
 sensors_list = get_sensorslist(65.001, 37.001, 99.001, 5.001, location, key_read)
 
 # Getting PA data
-get_historicaldata(sensors_list,bdate,edate,key_read)
+average_time=60
+get_historicaldata(sensors_list,bdate,edate,average_time,key_read)
