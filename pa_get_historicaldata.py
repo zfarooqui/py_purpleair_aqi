@@ -85,7 +85,7 @@ def get_sensorslist(nwlng,nwlat,selng,selat,location,key_read):
 
 def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
     # Historical API URL
-    root_api_url = 'https://june2022.api.purpleair.com/v1/sensors/'
+    root_api_url = 'https://api.purpleair.com/v1/sensors/'
     
     # Average time: The desired average in minutes, one of the following:0 (real-time),10 (default if not specified),30,60
     average_api = f'&average={average_time}'
