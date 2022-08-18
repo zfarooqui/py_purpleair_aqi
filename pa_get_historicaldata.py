@@ -23,7 +23,10 @@ engine = create_engine('postgresql://postgres:password@location:port/database')
 
 # API Keys provided by PurpleAir(c)
 key_read  = 'insert your key'
-    
+
+# Sleep Seconds
+sleep_seconds = 3 # wait sleep_seconds after each query
+
 def get_sensorslist(nwlng,nwlat,selng,selat,location,key_read):
     # PurpleAir API URL
     root_url = 'https://api.purpleair.com/v1/sensors/'
@@ -125,6 +128,9 @@ def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
 
         # Creating start and end date api url
         for i,d in enumerate(date_list_unix):
+            # Wait time 
+            time.sleep(sleep_seconds)
+            
             if (i < len_datelist):
                 print('Downloading for PA: %s for Dates: %s and %s.' 
                       %(s,datetime.fromtimestamp(date_list_unix[i+1]),datetime.fromtimestamp(d)))
