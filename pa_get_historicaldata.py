@@ -186,6 +186,10 @@ edate = '6-6-2022'
 location='outdoor' # or 'indoor' or 'both'
 sensors_list = get_sensorslist(65.001, 37.001, 99.001, 5.001, location, key_read)
 
+
+# Average_time. The desired average in minutes, one of the following: 0 (real-time), 
+#                  10 (default if not specified), 30, 60, 360 (6 hour), 1440 (1 day)
+average_time=60 # or 10  or 0 (Current script is set only for real-time, 10, or 60 minutes data)
+
 # Getting PA data
-average_time=60
 get_historicaldata(sensors_list,bdate,edate,average_time,key_read)
