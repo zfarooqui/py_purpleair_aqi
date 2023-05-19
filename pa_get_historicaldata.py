@@ -74,6 +74,7 @@ def get_sensorslist(nwlng,nwlat,selng,selat,location,key_read):
         raise requests.exceptions.RequestException
 
     # Creating a PurpleAir monitors table in PostgreSQL (Optional)
+    #      If you dont want to save to PostgreSQL then comment line 22 and 78
     df.to_sql('tablename', con=engine, if_exists='append', index=False)
     
     # writing to csv file
@@ -103,23 +104,27 @@ def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
             fields_api_url += f'%2C{f}'
 
     # Dates of Historical Data period
-    begindate = datetime.strptime(bdate, '%m-%d-%Y')
-    enddate   = datetime.strptime(edate, '%m-%d-%Y')
+    begindate = datetime.fromisoformat(bdate)
+    enddate   = datetime.fromisoformat(edate)
     
     # Downlaod days based on average
     if (average_time == 60):
-        date_list = pd.date_range(begindate,enddate,freq='14d') # for 14 days of data
+        datelist = pd.date_range(begindate,enddate,freq='14d') # for 14 days of data
     else:
-        date_list = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
+        datelist = pd.date_range(begindate,enddate,freq='2d') # for 2 days of data
         
-    # Converting to UNIX timestamp
-    date_list_unix=[]
-    for dt in date_list:
-        date_list_unix.append(int(time.mktime(dt.timetuple())))
-
     # Reversing to get data from end date to start date
-    date_list_unix.reverse()
-    len_datelist = len(date_list_unix) - 1
+    datelist = datelist.tolist()
+    datelist.reverse()
+    
+    # Converting to PA required format
+    date_list=[]
+    for dt in datelist:
+        dd = dt.strftime('%Y-%m-%d') + 'T' + dt.strftime('%H:%M:%S') +'Z'
+        date_list.append(dd)
+
+    # to get data from end date to start date
+    len_datelist = len(date_list) - 1
         
     # Getting 2-data for one sensor at a time
     for s in sensors_list:
@@ -127,14 +132,13 @@ def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
         hist_api_url = root_api_url + f'{s}/history/csv?api_key={key_read}'
 
         # Creating start and end date api url
-        for i,d in enumerate(date_list_unix):
+        for i,d in enumerate(date_list):
             # Wait time 
             time.sleep(sleep_seconds)
             
             if (i < len_datelist):
-                print('Downloading for PA: %s for Dates: %s and %s.' 
-                      %(s,datetime.fromtimestamp(date_list_unix[i+1]),datetime.fromtimestamp(d)))
-                dates_api_url = f'&start_timestamp={date_list_unix[i+1]}&end_timestamp={d}'
+                print('Downloading for PA: %s for Dates: %s and %s.' %(s,date_list[i+1]),d))
+                dates_api_url = f'&start_timestamp={date_list[i+1]}&end_timestamp={d}'
             
                 # Final API URL
                 api_url = hist_api_url + dates_api_url + average_api + fields_api_url
@@ -159,28 +163,23 @@ def get_historicaldata(sensors_list,bdate,edate,average_time,key_read):
                     print('------------- No Data Available -------------')
                 else:
                     # Adding Sensor Index/ID
-                    df['id'] = s
-                
-                    #
-                    date_time_utc=[]
-                    for index, row in df.iterrows():
-                        date_time_utc.append(datetime.fromtimestamp(row['time_stamp']))
-                    df['date_time_utc'] = date_time_utc
+                    #df['id'] = s
                 
                     # Dropping duplicate rows
                     df = df.drop_duplicates(subset=None, keep='first', inplace=False)
                     
                     # Writing to Postgres Table (Optional)
+                    #      If you dont want to save to PostgreSQL then comment line 22, 78, and 173
                     df.to_sql('tablename', con=engine, if_exists='append', index=False)
                     
                     # writing to csv file
                     folderpath = 'Folder path'
-                    filename = folderpath + '\sensorsID_%s_%s_%s.csv' % (s,datetime.fromtimestamp(date_list_unix[i+1]).strftime('%m-%d-%Y'),datetime.fromtimestamp(d).strftime('%m-%d-%Y'))
+                    filename = folderpath + '\sensorsID_%s_%s_%s.csv' % (s,date_list[i+1]),d)
                     df.to_csv(filename, index=False, header=True)
 
 # Data download period
-bdate = '6-1-2022' 
-edate = '6-6-2022'
+bdate = '2022-06-01T00:00:00+00:00' 
+edate = '2022-06-15T00:00:00+00:00'
 
 # Getting sensors list in Box domain [nwlng,, nwlat, selng, selat]
 location='outdoor' # or 'indoor' or 'both'
